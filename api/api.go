@@ -1,11 +1,13 @@
 package api
+
 import (
-	"api-server/data"
 	"api-server/auth"
+	"api-server/data"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -32,6 +34,7 @@ func saleForID(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		fmt.Fprintf(w, "Id is not founded")
 	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func createSale(w http.ResponseWriter, r *http.Request) {
@@ -41,6 +44,7 @@ func createSale(w http.ResponseWriter, r *http.Request) {
 	data.
 	SalesStore = append(data.SalesStore, sale)
 	fmt.Println("created a Sale successfully")
+	w.WriteHeader(http.StatusCreated)
 }
 
 func updateSale(w http.ResponseWriter, r *http.Request) {
@@ -58,7 +62,9 @@ func updateSale(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	fmt.Fprintf(w, "Id is not founded")
+	w.WriteHeader(http.StatusOK)
 }
+
 func deleteSale(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
@@ -70,13 +76,20 @@ func deleteSale(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	fmt.Println("Deleting User", id)
+	w.WriteHeader(http.StatusAccepted)
 
 }
+
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Homepage")
 }
+
+
 var jwtsecretkey = []byte("abcdef")
-func HandleRquests() {
+
+func StartServer(port int) {
+	fmt.Printf("Starting server at %v\n", port)
+	fmt.Printf("Sever Link: http://localhost:%v\n", port)
 	fmt.Println(auth.GenerateJWT(jwtsecretkey))
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
@@ -86,6 +99,6 @@ func HandleRquests() {
 	r.Get("/sales/{id}", auth.IsAuthorized(saleForID))
 	r.Put("/sales/{id}", auth.IsAuthorized(updateSale))
 	r.Delete("/sales/{id}", auth.IsAuthorized(deleteSale))
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":" + strconv.Itoa(port), r))
 
 }

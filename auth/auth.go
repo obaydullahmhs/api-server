@@ -19,7 +19,7 @@ func GenerateJWT(mySigningKey []byte) (string, error) {
 	claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
 	tokenString, err := token.SignedString(mySigningKey)
 	if err != nil {
-		fmt.Errorf("Something went wrong: %s", err.Error())
+		fmt.Printf("Something went wrong: %s", err.Error())
 		return "", err
 	}
 	return tokenString, nil
@@ -27,15 +27,17 @@ func GenerateJWT(mySigningKey []byte) (string, error) {
 
 func IsAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Header["Token"] != nil {
-			token, err := jwt.Parse(r.Header["Token"][0], func(token *jwt.Token) (interface{}, error) {
+		bearer := r.Header.Get("Authorization")
+		if len(bearer) > 0{
+			bearer = bearer[7:]
+			token, err := jwt.Parse(bearer, func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, fmt.Errorf("there was an error")
 				}
 				return mysecretkey, nil
 			})
 			if err != nil {
-				fmt.Fprintf(w, err.Error())
+				fmt.Fprint(w, err.Error())
 			}
 			if token.Valid {
 				endpoint(w, r)

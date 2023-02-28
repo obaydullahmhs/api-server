@@ -1,9 +1,8 @@
+
 package main
 
-import "api-server/api"
-
-
+import "api-server/cmd"
 
 func main() {
-	api.HandleRquests()
+	cmd.Execute()
 }
