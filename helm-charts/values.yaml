@@ -1,0 +1,14 @@
+
+Deployment:
+  Replicas: 3
+  ContainerName: api-server
+  Image: obaydullahmhs/api-server
+  ContainerPort: 8080
+
+Labels:
+  app: api-server
+
+Service:
+  type: ClusterIP
+  Port: 8080
+  TargetPort: 8080
