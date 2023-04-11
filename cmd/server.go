@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"api-server/api"
+	"github.com/obaydullahmhs/api-server/api"
 	"fmt"
 
 	"github.com/spf13/cobra"

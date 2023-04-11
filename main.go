@@ -1,7 +1,7 @@
 
 package main
 
-import "api-server/cmd"
+import "github.com/obaydullahmhs/api-server/cmd"
 
 func main() {
 	cmd.Execute()

@@ -1,8 +1,8 @@
 package api
 
 import (
-	"api-server/auth"
-	"api-server/data"
+	"github.com/obaydullahmhs/api-server/auth"
+	"github.com/obaydullahmhs/api-server/data"
 	"encoding/json"
 	"fmt"
 	"log"
